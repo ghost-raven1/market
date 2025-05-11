@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Advertisement;
 
-class AdvertisingService
+class AdvertisementService
 {
     public function createAdvertisement(array $data)
     {
