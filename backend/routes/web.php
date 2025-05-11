@@ -9,7 +9,7 @@ use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\BannerController;
-use App\Http\Controllers\BannerSettingsController;
+use App\Http\Controllers\Admin\BannerSettingsController;
 
 Route::get('/', function () {
     return view('welcome');
