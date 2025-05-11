@@ -1,0 +1,119 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/scripts:/var/www/html/scripts
+      - ./backups:/backups
+    environment:
+      - APP_ENV=production
+      - DB_HOST=db
+      - DB_DATABASE=market
+      - DB_USERNAME=market
+      - DB_PASSWORD=market
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - dbdata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=market
+      - MYSQL_USER=market
+      - MYSQL_PASSWORD=market
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      # - "443:443"
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./backend:/var/www/html
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      # - ./certbot/conf:/etc/letsencrypt
+      # - ./certbot/www:/var/www/certbot
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+
+  # certbot:
+  #   image: certbot/certbot
+  #   volumes:
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - app-network
+
+  # node-exporter:
+  #   image: prom/node-exporter
+  #   ports:
+  #     - "9100:9100"
+  #   networks:
+  #     - app-network
+
+  # mysql-exporter:
+  #   image: prom/mysqld-exporter:latest
+  #   environment:
+  #     - MYSQLD_EXPORTER_DATA_SOURCE_NAME=market:market@tcp(db:3306)/market
+  #   ports:
+  #     - "9104:9104"
+  #   networks:
+  #     - app-network
+
+  # alertmanager:
+  #   image: prom/alertmanager
+  #   volumes:
+  #     - ./monitoring/alertmanager:/etc/alertmanager
+  #   ports:
+  #     - "9093:9093"
+  #   networks:
+  #     - app-network
+
+volumes:
+  dbdata:
+  grafana-storage:
+
+networks:
+  app-network:
+    driver: bridge 

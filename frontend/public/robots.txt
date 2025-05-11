@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+Allow: /advertisements
+Allow: /categories
+Allow: /profile
+Allow: /messages
+Allow: /notifications
+
+# Запрещаем индексацию приватных страниц
+Disallow: /admin/
+Disallow: /api/
+Disallow: /metrics/
+Disallow: /private/
+
+# Указываем расположение sitemap
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Дополнительные правила для Google
+User-agent: Googlebot
+Allow: /images/
+Allow: /static/
+
+# Правила для Yandex
+User-agent: Yandex
+Allow: /images/
+Allow: /static/
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term 

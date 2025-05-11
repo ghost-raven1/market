@@ -1,0 +1,4 @@
+# Run backup script daily at 2 AM
+0 2 * * * /var/www/html/scripts/backup.sh >> /var/log/cron.log 2>&1
+
+# Empty line at end of file is required 
