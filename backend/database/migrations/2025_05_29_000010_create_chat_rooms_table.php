@@ -14,7 +14,7 @@ return new class extends Migration
             $table->enum('status', ['active', 'closed'])->default('active');
             $table->timestamp('closed_at')->nullable();
             $table->string('close_reason')->nullable();
-            $table->foreignId('last_message_id')->nullable()->constrained('chat_messages')->onDelete('set null');
+            $table->unsignedBigInteger('last_message_id')->nullable();
             $table->timestamps();
 
             $table->index(['user_id', 'status']);
