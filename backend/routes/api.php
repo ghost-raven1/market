@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // User management routes
-Route::middleware([])->group(function () {
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::patch('/users/{user}', [UserController::class, 'update']);
